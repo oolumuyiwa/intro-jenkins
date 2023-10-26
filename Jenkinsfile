@@ -19,22 +19,22 @@ pipeline {
       steps {
         bat '''
         echo %HEROKU_API_KEY%
-        echo %HEROKU_API_KEY% | docker login --username=_ --password-stdin registry.heroku.com
+        docker login --username=_ --password=%HEROKU_API_KEY% registry.heroku.com
         '''
       }
     }
     stage('Push to Heroku registry') {
       steps {
         bat '''
-          docker tag oolumuyiwa/java-web-app:latest registry.heroku.com/$APP_NAME/web
-          docker push registry.heroku.com/$APP_NAME/web
+          docker tag oolumuyiwa/java-web-app:latest registry.heroku.com/%APP_NAME%/web
+          docker push registry.heroku.com/%APP_NAME%/web
         '''
       }
     }
     stage('Release the image') {
       steps {
         bat '''
-          heroku container:release web --app=$APP_NAME
+          heroku container:release web --app=%APP_NAME%
         '''
       }
     }
